@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Imgbone Example</title>
+    <meta name="description" content="Imgbone Example">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js' async defer></script>
+    <script src='//code.jquery.com/jquery-1.11.0.min.js'></script>
+    <script src='../build/imgcropper.js'></script>
+  </head>
+  <body>
+    <div id='cropper'>
+      <img src='spagballs.png' />
+    </div>
+    <button onclick='$("#cropper").imagecropper("sizeImageUp")'>Size Up</button>
+    <button onclick='$("#cropper").imagecropper("sizeImageDown")'>Size Down</button>
+    <script type="text/javascript">
+    $('#cropper').imagecropper({
+      width: 250,
+      height: 200
+    });
+    </script>
+  </body>
+</html>
