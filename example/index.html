@@ -18,9 +18,10 @@
     <button onclick='$("#cropper").imagecropper("sizeImageUp")'>Size Up</button>
     <button onclick='$("#cropper").imagecropper("sizeImageDown")'>Size Down</button>
     <script type="text/javascript">
-    $('#cropper').imagecropper({
+    window.bone = $('#cropper').imagecropper({
       width: 250,
-      height: 200
+      height: 200,
+      scale: 2
     });
     </script>
   </body>

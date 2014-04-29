@@ -4,11 +4,11 @@ module.exports = (function CropImage(global, $, undefined) {
   return require('./Class.js').extend({
 
     init: function CropImageInit(img) {
-      this.set('element', img);
-      this.set('size', { width: 1, height: 1 });
-      this.set('offset', { x: 0, y: 0 });
+      this.set('element', img)
+          .set('size', { width: 1, height: 1 })
+          .set('offset', { x: 0, y: 0 })
+          .set('scale', 1);
 
-      console.log('binding');
 
       var load_image = new Image(), me = this;
       load_image.onload = function loadImage() {
@@ -58,8 +58,8 @@ module.exports = (function CropImage(global, $, undefined) {
 
     exportSettings: function CropImageExportObject() {
       return {
-        width:  Math.round(this.getSize().width),
-        height: Math.round(this.getSize().height),
+        width:  Math.round(this.getSize().width) * 1 / this.getScale(),
+        height: Math.round(this.getSize().height) * 1 / this.getScale(),
         top:    Math.round(this.getOffset().y),
         left:   Math.round(this.getOffset().x)
       };

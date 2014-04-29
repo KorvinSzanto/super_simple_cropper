@@ -15,9 +15,16 @@ module.exports = (function CropArea(global, $, undefined) {
           .set('image', new CropImage(area.children('img')))
           .set('drag_start', { x: 0, y: 0 })
           .set('drag_offset_start', { x: 0, y: 0 })
-          .set('dragging', false);
+          .set('dragging', false)
+          .set('scale', 1);
 
       return this.initializeDOM().initializeEvents().render();
+    },
+
+    setScale: function CropAreaSetScale(scale) {
+      this.getAttributes().image_scale = scale;
+      this.getImage().setScale(scale);
+      return this;
     },
 
     initializeDOM: function CropAreaInitializeDOM() {

@@ -35,35 +35,53 @@
 module.exports = function Class() {
   var attr = {};
   this.is = function(key) {
+    var camel = key.split('_').map(function(value) {
+      return value.substr(0, 1).toUpperCase() + value.toLowerCase().substr(1);
+    }).join('');
+    var fn = 'is' + camel;
+    if (typeof this[fn] === 'function') {
+      return this[fn].call(this);
+    }
     return !!this.get(key);
   };
+  this.getAttributes = function() {
+    return attr;
+  };
   this.get = function(key) {
+    var camel = key.split('_').map(function(value) {
+      return value.substr(0, 1).toUpperCase() + value.toLowerCase().substr(1);
+    }).join('');
+    var fn = 'get' + camel;
+    if (typeof this[fn] === 'function') {
+      return this[fn].call(this);
+    }
     return attr[key];
   };
   this.set = function(key, value) {
-    attr[key] = value;
-    var split = key.split('_').map(function(value) {
+    var camel = key.split('_').map(function(value) {
       return value.substr(0, 1).toUpperCase() + value.toLowerCase().substr(1);
-    });
-    var fn = 'get' + split.join('');
+    }).join('');
+    var fn = 'get' + camel;
     if (typeof this[fn] === 'undefined') {
       this[fn] = function() {
-        return this.get(key);
+        return attr[key];
       };
     }
-    fn = 'set' + split.join('');
+    fn = 'is' + camel;
+    if (typeof this[fn] === 'undefined') {
+      this[fn] = function() {
+        return !!this.get(key);
+      };
+    }
+
+    fn = 'set' +camel;
     if (typeof this[fn] === 'undefined') {
       this[fn] = function(value) {
-        return this.set(key, value);
+        attr[key] = value;
+        return this;
       };
     }
-    fn = 'is' + split.join('');
-    if (typeof this[fn] === 'undefined') {
-      this[fn] = function() {
-        return this.is(key);
-      };
-    }
-    return this;
+    return this[fn].call(this, value);
   };
   if (this.init) {
     return this.init.apply(this, arguments);
@@ -90,9 +108,16 @@ module.exports = (function CropArea(global, $, undefined) {
           .set('image', new CropImage(area.children('img')))
           .set('drag_start', { x: 0, y: 0 })
           .set('drag_offset_start', { x: 0, y: 0 })
-          .set('dragging', false);
+          .set('dragging', false)
+          .set('scale', 1);
 
       return this.initializeDOM().initializeEvents().render();
+    },
+
+    setScale: function CropAreaSetScale(scale) {
+      this.getAttributes().image_scale = scale;
+      this.getImage().setScale(scale);
+      return this;
     },
 
     initializeDOM: function CropAreaInitializeDOM() {
@@ -220,11 +245,11 @@ module.exports = (function CropImage(global, $, undefined) {
   return require('./Class.js').extend({
 
     init: function CropImageInit(img) {
-      this.set('element', img);
-      this.set('size', { width: 1, height: 1 });
-      this.set('offset', { x: 0, y: 0 });
+      this.set('element', img)
+          .set('size', { width: 1, height: 1 })
+          .set('offset', { x: 0, y: 0 })
+          .set('scale', 1);
 
-      console.log('binding');
 
       var load_image = new Image(), me = this;
       load_image.onload = function loadImage() {
@@ -274,8 +299,8 @@ module.exports = (function CropImage(global, $, undefined) {
 
     exportSettings: function CropImageExportObject() {
       return {
-        width:  Math.round(this.getSize().width),
-        height: Math.round(this.getSize().height),
+        width:  Math.round(this.getSize().width) * 1 / this.getScale(),
+        height: Math.round(this.getSize().height) * 1 / this.getScale(),
         top:    Math.round(this.getOffset().y),
         left:   Math.round(this.getOffset().x)
       };
@@ -360,9 +385,9 @@ module.exports = (function() {
   return function(settings) {
     var me = $(this),
         cropper;
-    if (!me.data('imagecropper')) {
+    if (!me.data('_imagecropper')) {
       cropper = new Cropper(this, settings.width, settings.height);
-      this.data('imagecropper', cropper);
+      this.data('_imagecropper', cropper);
 
       $.fn.each.call(settings, function(key, val) {
         cropper.set(key, val);
@@ -370,10 +395,16 @@ module.exports = (function() {
 
       cropper.render();
     } else {
-      cropper = this.data('imagecropper');
-      if (typeof cropper[settings] === 'function') {
 
-        return cropper[settings].apply(cropper, Array.prototype.slice.call(arguments, 1));
+      cropper = this.data('_imagecropper');
+      if (typeof cropper[settings] === 'function') {
+        var return_value = cropper[settings].apply(cropper, Array.prototype.slice.call(arguments, 1));
+
+        if (return_value === cropper) {
+          return this;
+        } else {
+          return return_value;
+        }
       }
     }
 
