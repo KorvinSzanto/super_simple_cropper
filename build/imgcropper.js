@@ -172,7 +172,7 @@ module.exports = (function CropArea(global, $, undefined) {
             offset.x = offset_start.x - (start.x - e._offsetX);
             offset.y = offset_start.y - (start.y - e._offsetY);
 
-            me.fixImagePosition().render();
+            me.render();
           }(me, e));
         }
         event.preventDefault();
