@@ -150,20 +150,6 @@ module.exports = (function CropArea(global, $, undefined) {
       return e;
     },
 
-    fixImagePosition: function CropAreaFixImagePosition() {
-      var offset_padding = 10,
-          offset = this.getImage().getOffset();
-
-
-      offset.x = Math.max(offset.x, -this.getImage().getSize().width + offset_padding);
-      offset.x = Math.min(offset.x, this.getSize().width - offset_padding);
-
-      offset.y = Math.max(offset.y, -this.getImage().getSize().height + offset_padding);
-      offset.y = Math.min(offset.y, this.getSize().height - offset_padding);
-
-      return this;
-    },
-
     sizeImageUp: function CropAreaSizeImageUp() {
       this.getImage().sizeUp.apply(this.getImage(), Array.prototype.slice.call(arguments));
       return this;
@@ -280,9 +266,6 @@ module.exports = (function CropImage(global, $, undefined) {
 
       this.getSize().width = Math.max(1, width + ((multiplier || 1) * (by || width * 0.10)));
       this.getSize().height = (this.getSize().width / width) * height;
-
-      this.getOffset().x -= (this.getSize().width - width) / 2;
-      this.getOffset().y -= (this.getSize().height - height) / 2;
 
       return this.render();
     },

@@ -40,9 +40,6 @@ module.exports = (function CropImage(global, $, undefined) {
       this.getSize().width = Math.max(1, width + ((multiplier || 1) * (by || width * 0.10)));
       this.getSize().height = (this.getSize().width / width) * height;
 
-      this.getOffset().x -= (this.getSize().width - width) / 2;
-      this.getOffset().y -= (this.getSize().height - height) / 2;
-
       return this.render();
     },
 
