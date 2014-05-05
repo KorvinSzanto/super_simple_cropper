@@ -9,7 +9,6 @@ module.exports = (function CropArea(global, $, undefined) {
       if (!(area instanceof $)) {
         area = $(area);
       }
-      console.log(area);
       this.set('size', { width: width, height: height })
           .set('element', area)
           .set('image', new CropImage(area.children('img')))
