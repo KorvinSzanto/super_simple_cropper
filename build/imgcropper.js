@@ -166,11 +166,11 @@ module.exports = (function CropArea(global, $, undefined) {
 
     sizeImageUp: function CropAreaSizeImageUp() {
       this.getImage().sizeUp.apply(this.getImage(), Array.prototype.slice.call(arguments));
-      return this.fixImagePosition();
+      return this;
     },
     sizeImageDown: function CropAreaSizeImageDown() {
       this.getImage().sizeDown.apply(this.getImage(), Array.prototype.slice.call(arguments));
-      return this.fixImagePosition();
+      return this;
     },
 
     initializeEvents: function CropAreaInitializeEvents() {
